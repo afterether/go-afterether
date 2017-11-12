@@ -24,7 +24,7 @@ import (
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0x13771466fee63d1916818f25c5e2ed5e09330b9fccc8da760c172d09412680d4") // Mainnet genesis hash to enforce below configs on
+	MainnetGenesisHash = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3") // Mainnet genesis hash to enforce below configs on
 	TestnetGenesisHash = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d") // Testnet genesis hash to enforce below configs on
 )
 
@@ -37,7 +37,7 @@ var (
 		DAOForkSupport: false,
 		EIP150Block:    big.NewInt(1),
 		EIP150Hash:     common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
-		EIP155Block:    big.NewInt(1),
+		EIP155Block:    big.NewInt(151075),
 		EIP158Block:    big.NewInt(1),
 		ByzantiumBlock: big.NewInt(1),
 
@@ -175,7 +175,7 @@ func (c *ChainConfig) IsEIP150(num *big.Int) bool {
 }
 
 func (c *ChainConfig) IsEIP155(num *big.Int) bool {
-	return isForked(c.EIP155Block, num)
+    return isForked(big.NewInt(151075), num)
 }
 
 func (c *ChainConfig) IsEIP158(num *big.Int) bool {

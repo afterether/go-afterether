@@ -546,6 +546,7 @@ func (ethash *Ethash) Finalize(chain consensus.ChainReader, header *types.Header
 var (
 	big8  = big.NewInt(8)
 	big32 = big.NewInt(32)
+	reward_block=big.NewInt(154865)
 )
 
 // AccumulateRewards credits the coinbase of the given block with the mining
@@ -556,7 +557,11 @@ func AccumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 	// Select the correct block reward based on chain progression
 	blockReward := frontierBlockReward
 	if config.IsByzantium(header.Number) {
-		blockReward = byzantiumBlockReward
+		if (header.Number.Cmp(reward_block)>0) {
+			blockReward=big.NewInt(2e+18);
+		} else {
+			blockReward = byzantiumBlockReward
+		}
 	}
 	// Accumulate the rewards for the miner and any included uncles
 	reward := new(big.Int).Set(blockReward)
