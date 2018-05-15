@@ -19,27 +19,41 @@ package params
 import (
 	"fmt"
 	"math/big"
-	"math"
+
 	"github.com/ethereum/go-ethereum/common"
 )
 
 var (
-	MainnetGenesisHash = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3") // Mainnet genesis hash to enforce below configs on
+    MainnetGenesisHash = common.HexToHash("0x13771466fee63d1916818f25c5e2ed5e09330b9fccc8da760c172d09412680d4") // AET's Mainnet genesis hash to enforce below configs on
 	TestnetGenesisHash = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d") // Testnet genesis hash to enforce below configs on
 )
 
 var (
 	// MainnetChainConfig is the chain parameters to run a node on the main network.
+    AET_MainnetChainConfig = &ChainConfig{
+        ChainId:        big.NewInt(233),
+        HomesteadBlock: big.NewInt(1),
+        DAOForkBlock:   big.NewInt(1),
+        DAOForkSupport: false,
+        EIP150Block:    big.NewInt(1),
+        EIP150Hash:     common.HexToHash(""),
+        EIP155Block:    big.NewInt(151075),
+        EIP158Block:    big.NewInt(1),
+        ByzantiumBlock: big.NewInt(1),
+
+        Ethash: new(EthashConfig),
+    }
+
 	MainnetChainConfig = &ChainConfig{
-		ChainId:        big.NewInt(233),
-		HomesteadBlock: big.NewInt(math.MaxInt64),
-		DAOForkBlock:   big.NewInt(math.MaxInt64),
-		DAOForkSupport: false,
-		EIP150Block:    big.NewInt(1),
+		ChainId:        big.NewInt(1),
+		HomesteadBlock: big.NewInt(1150000),
+		DAOForkBlock:   big.NewInt(1920000),
+		DAOForkSupport: true,
+		EIP150Block:    big.NewInt(2463000),
 		EIP150Hash:     common.HexToHash("0x2086799aeebeae135c246c65021c82b4e15a2c451340993aacfd2751886514f0"),
-		EIP155Block:    big.NewInt(151075),
-		EIP158Block:    big.NewInt(1),
-		ByzantiumBlock: big.NewInt(1),
+		EIP155Block:    big.NewInt(2675000),
+		EIP158Block:    big.NewInt(2675000),
+		ByzantiumBlock: big.NewInt(4370000),
 
 		Ethash: new(EthashConfig),
 	}
@@ -47,14 +61,14 @@ var (
 	// TestnetChainConfig contains the chain parameters to run a node on the Ropsten test network.
 	TestnetChainConfig = &ChainConfig{
 		ChainId:        big.NewInt(3),
-		HomesteadBlock: big.NewInt(math.MaxInt64),
+		HomesteadBlock: big.NewInt(0),
 		DAOForkBlock:   nil,
 		DAOForkSupport: true,
-		EIP150Block:    big.NewInt(1),
+		EIP150Block:    big.NewInt(0),
 		EIP150Hash:     common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d"),
-		EIP155Block:    big.NewInt(1),
-		EIP158Block:    big.NewInt(1),
-		ByzantiumBlock: big.NewInt(1),
+		EIP155Block:    big.NewInt(10),
+		EIP158Block:    big.NewInt(10),
+		ByzantiumBlock: big.NewInt(1700000),
 
 		Ethash: new(EthashConfig),
 	}
@@ -175,7 +189,7 @@ func (c *ChainConfig) IsEIP150(num *big.Int) bool {
 }
 
 func (c *ChainConfig) IsEIP155(num *big.Int) bool {
-    return isForked(big.NewInt(151075), num)
+	return isForked(c.EIP155Block, num)
 }
 
 func (c *ChainConfig) IsEIP158(num *big.Int) bool {
@@ -183,7 +197,7 @@ func (c *ChainConfig) IsEIP158(num *big.Int) bool {
 }
 
 func (c *ChainConfig) IsByzantium(num *big.Int) bool {
-	return true;
+	return isForked(c.ByzantiumBlock, num)
 }
 
 // GasTable returns the gas table corresponding to the current phase (homestead or homestead reprice).

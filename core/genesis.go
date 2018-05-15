@@ -159,7 +159,7 @@ func SetupGenesisBlock(db ethdb.Database, genesis *Genesis) (*params.ChainConfig
 	if (stored == common.Hash{}) {
 		if genesis == nil {
 			log.Info("Writing default main-net genesis block")
-			genesis = DefaultGenesisBlock()
+			genesis = DefaultAETGenesisBlock()
 		} else {
 			log.Info("Writing custom genesis block")
 		}
@@ -212,7 +212,7 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 	case g != nil:
 		return g.Config
 	case ghash == params.MainnetGenesisHash:
-		return params.MainnetChainConfig
+		return params.AET_MainnetChainConfig
 	case ghash == params.TestnetGenesisHash:
 		return params.TestnetChainConfig
 	default:
@@ -305,7 +305,14 @@ func GenesisBlockForTesting(db ethdb.Database, addr common.Address, balance *big
 	g := Genesis{Alloc: GenesisAlloc{addr: {Balance: balance}}}
 	return g.MustCommit(db)
 }
-
+func DefaultAETGenesisBlock() *Genesis { // returns default AfterEther genesis block
+    return &Genesis{
+        Config:     params.AET_MainnetChainConfig,
+        Difficulty: big.NewInt(2100),
+        GasLimit:   2100000,
+        Alloc:      decodePrealloc(AETallocData),
+    }
+}
 // DefaultGenesisBlock returns the Ethereum main net genesis block.
 func DefaultGenesisBlock() *Genesis {
 	return &Genesis{
